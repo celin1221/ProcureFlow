@@ -12,10 +12,10 @@ spring:
 
 security:
   jwt:
-    secret: "v360-test-super-secure-jwt-signing-secret-key-for-hmac-sha256-test-only"
+    secret: "procureflow-test-super-secure-jwt-signing-secret-key-for-hmac-sha256-test-only"
     expiration-seconds: 3600
   clients:
-    - client-id: "v360-platform"
+    - client-id: "procureflow-platform"
       client-secret: "platform-secret-123"
       tenant-code: "PLATFORM"
       roles:

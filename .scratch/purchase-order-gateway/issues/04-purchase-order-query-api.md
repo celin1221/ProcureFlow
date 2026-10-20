@@ -1,6 +1,6 @@
 # 04: API Canônica de Consulta e Filtros de Pedidos
 
-**What to build:** Endpoints REST de consulta para a plataforma V360 visualizar os pedidos de todos os clientes em formato único, com suporte a paginação e filtros úteis para a operação: por cliente de origem (`clientId`), por fornecedor (`vendorTaxId`), por situação (`status`), e por saldo pendente a receber (`onlyPendingBalance`), além de detalhe do pedido com cálculo explícito do saldo pendente por item.
+**What to build:** Endpoints REST de consulta para a plataforma ProcureFlow visualizar os pedidos de todos os clientes em formato único, com suporte a paginação e filtros úteis para a operação: por cliente de origem (`clientId`), por fornecedor (`vendorTaxId`), por situação (`status`), e por saldo pendente a receber (`onlyPendingBalance`), além de detalhe do pedido com cálculo explícito do saldo pendente por item.
 
 **Blocked by:** 02-client-alfa-ingestion, 03-client-beta-ingestion
 

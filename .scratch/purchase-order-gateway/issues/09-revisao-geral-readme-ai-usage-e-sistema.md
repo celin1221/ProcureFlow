@@ -9,7 +9,7 @@
 ### Itens de Revisão:
 
 - [ ] **Revisão Detalhada do `README.md`:**
-  - [ ] Validar a clareza da explicação do problema de negócio (Procure-to-Pay, Three-Way Matching e papel da V360)
+  - [ ] Validar a clareza da explicação do problema de negócio (Procure-to-Pay, Three-Way Matching e papel da ProcureFlow)
   - [ ] Conferir a acurácia dos diagramas e da descrição dos padrões (Ports & Adapters, Chain of Responsibility, Modelo Canônico)
   - [ ] Verificar a resposta à pergunta obrigatória da Parte 2 ("O que mudou da Parte 1 para a Parte 2") e a explicação do impacto no banco de dados / schema
   - [ ] Testar comandos de execução local e via Docker Compose

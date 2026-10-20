@@ -1,5 +1,5 @@
 # ==============================================================================
-# Multi-stage Dockerfile para V360 Purchase Order Integration Gateway
+# Multi-stage Dockerfile para ProcureFlow Purchase Order Integration Gateway
 # Java 21 LTS - Build e Runtime Otimizados
 # ==============================================================================
 
@@ -31,16 +31,16 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Usuário de sistema sem privilégios para segurança
-RUN groupadd -r v360 && useradd -r -g v360 -d /app -s /sbin/nologin v360
+RUN groupadd -r procureflow && useradd -r -g procureflow -d /app -s /sbin/nologin procureflow
 
 # Copia artefato compilado e arquivos de dados de exemplo
 COPY --from=builder /build/target/*.jar app.jar
 COPY sample-data ./sample-data
 
 # Ajusta permissões
-RUN chown -R v360:v360 /app
+RUN chown -R procureflow:procureflow /app
 
-USER v360
+USER procureflow
 
 EXPOSE 8080
 

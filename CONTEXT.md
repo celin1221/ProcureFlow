@@ -1,11 +1,11 @@
 # Purchase Order Integration Gateway
 
-Intermediate integration service connecting diverse enterprise client procurement systems to the V360 platform through a single canonical contract, providing purchase order consultation, invoice reconciliation (three-way matching), and audit reporting.
+Intermediate integration service connecting diverse enterprise client procurement systems to the ProcureFlow platform through a single canonical contract, providing purchase order consultation, invoice reconciliation (three-way matching), and audit reporting.
 
 ## Language
 
 **Client**:
-The enterprise buyer contracting V360, identified by an immutable unique identifier/tenant code rather than a mutable corporate name.
+The enterprise buyer contracting ProcureFlow, identified by an immutable unique identifier/tenant code rather than a mutable corporate name.
 _Avoid_: Customer, Empresa, Tenant, Comprador
 
 **Purchase Order**:

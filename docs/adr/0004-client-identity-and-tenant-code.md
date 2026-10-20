@@ -4,7 +4,7 @@ Date: 2026-09-04
 
 ## Context
 
-Different client organizations connect their ERPs to V360. Using mutable display names (e.g. "Alfa", "Alfa Energia") as database keys or query filters causes namespace collisions, vulnerability to corporate rebrandings, and risks data leakage if two clients share identical or similar trade names.
+Different client organizations connect their ERPs to ProcureFlow. Using mutable display names (e.g. "Alfa", "Alfa Energia") as database keys or query filters causes namespace collisions, vulnerability to corporate rebrandings, and risks data leakage if two clients share identical or similar trade names.
 
 ## Decision
 

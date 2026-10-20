@@ -4,7 +4,7 @@ Date: 2026-09-04
 
 ## Context
 
-The Purchase Order Integration Gateway connects external enterprise client ERPs (like SAP S/4HANA) and the central V360 platform. These communications are Machine-to-Machine (M2M) with no interactive human logins. Allowing unauthenticated access would expose confidential enterprise purchasing data and invoice amounts, while basic username/password schemes lack standard claims and token expiration controls.
+The Purchase Order Integration Gateway connects external enterprise client ERPs (like SAP S/4HANA) and the central ProcureFlow platform. These communications are Machine-to-Machine (M2M) with no interactive human logins. Allowing unauthenticated access would expose confidential enterprise purchasing data and invoice amounts, while basic username/password schemes lack standard claims and token expiration controls.
 
 ## Decision
 

@@ -7,7 +7,7 @@
 **Status:** done
 
 - [x] Projeto Spring Boot 3 configurado com Java 21 e executável via `./mvnw.cmd` e `./mvnw`
-- [x] Configuração de banco H2 persistente em arquivo (`./data/v360db`) e console web (`/h2-console`)
+- [x] Configuração de banco H2 persistente em arquivo (`./data/procureflowdb`) e console web (`/h2-console`)
 - [x] Suporte a perfil In-Memory para testes desacoplados do banco de dados
 - [x] Endpoint `POST /api/v1/auth/token` gerando JWT assinado com claims de roles e tenant
 - [x] Filtro de segurança Spring Security validando Bearer JWT nas rotas protegidas

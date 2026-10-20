@@ -1,12 +1,12 @@
-# Relato de Uso de Inteligência Artificial (AI_USAGE.md)
+# Engenharia Guiada por Inteligência Artificial (AI_USAGE.md)
 
-Este documento descreve de forma transparente, estruturada e aprofundada como ferramentas de Inteligência Artificial Generativa e o framework de **Agent Skills (Matt Pocock Skills)** foram utilizados na concepção e implementação do **V360 Conector de Pedidos de Compra**.
+Este documento descreve de forma transparente, estruturada e aprofundada como ferramentas de Inteligência Artificial Generativa e o framework de **Agent Skills (Matt Pocock Skills)** foram utilizados na concepção e implementação do **ProcureFlow - Purchase Order Integration Gateway**.
 
 O projeto foi conduzido sob uma filosofia estrita de **Human-in-the-Loop**: a IA operou como uma força de tração e pair programming avançado, enquanto o desenvolvedor humano atuou como **Tech Lead, Arquiteto de Software e Gatekeeper de Qualidade**, definindo premissas arquiteturais, selecionando padrões de mercado consagrados, guiando a modelagem do domínio e validando cada decisão técnica.
 
 ---
 
-## 1. O Framework de Agent Skills (Matt Pocock Skills) e seu Impacto no Case
+## 1. O Framework de Agent Skills (Matt Pocock Skills) e seu Impacto no Projeto
 
 Um dos maiores diferenciais metodológicos deste projeto foi a não utilização da IA de forma solta ou improvisada (*"vibe coding"*). Em vez de prompts informais em chat, o desenvolvimento foi orquestrado utilizando a especificação de **Agent Skills criada por Matt Pocock** (definida no diretório `.agents/skills/` e documentada em `AGENTS.md`).
 
@@ -20,7 +20,7 @@ Um dos maiores diferenciais metodológicos deste projeto foi a não utilização
 | **`code-review`** | Auditoria Dual-Axis em Subagentes Paralelos | Executou análises automatizadas divididas em dois eixos independentes: **Standards** (Code Smells do Martin Fowler) e **Spec** (aderência aos requisitos). |
 | **`codebase-design`** | Design de Módulos Profundos (*Deep Modules*) | Orientou a criação de interfaces enxutas com implementação rica, maximizando o encapsulamento nos adaptadores, portas e regras de conciliação. |
 
-### Por que o uso dessas Skills agrega valor decisivo à resolução do case?
+### Por que o uso dessas Skills agrega valor decisivo ao desenvolvimento do projeto?
 
 1. **Eliminação do Viés de Contexto (*Context Pollution*):**
    No `/code-review` tradicional com IA, o mesmo modelo que codifica tende a avaliar o próprio código de forma complacente. Com a skill de `code-review`, o sistema dispara **dois subagentes autônomos em paralelo**:
@@ -61,7 +61,7 @@ A arquitetura e solidez do projeto derivam de intervenções arquiteturais diret
   - Emissão de JWT stateless com tempo de expiração (`exp`), identificador de inquilino (`tenantCode`) e papéis de segurança;
   - Segregação estrita no Spring Security entre:
     - **`ROLE_CLIENT`:** Permissão restrita ao próprio inquilino (`CLI-ALFA-001`, `CLI-BETA-002`, `CLI-GAMA-003`). Tentativas de consultar ou ingerir pedidos de outro tenant resultam em `403 FORBIDDEN`;
-    - **`ROLE_PLATFORM`:** Perfil da operadora V360 para conciliação transversal de notas de fornecedores, consultas multi-tenant e emissão de relatórios analíticos globais.
+    - **`ROLE_PLATFORM`:** Perfil da operadora ProcureFlow para conciliação transversal de notas de fornecedores, consultas multi-tenant e emissão de relatórios analíticos globais.
 
 ---
 
@@ -82,24 +82,25 @@ A arquitetura e solidez do projeto derivam de intervenções arquiteturais diret
 
 ### Decisão 3: Padrão GoF *Chain of Responsibility* no Motor Three-Way Matching (ADR-0002)
 * **Contexto e Deliberação:**
-  A validação fiscal de faturas contra pedidos de compra envolve múltiplos critérios de conformidade (existência do pedido, correspondência de CNPJ do fornecedor, presença dos materiais faturados, tolerância de preço unitário e limite de saldo pendente). Implementar isso de forma sequencial procedural em um único método de serviço geraria código acoplado, de difícil manutenção e propenso a efeitos colaterais.
+  A validação fiscal de faturas contra pedidos de compra envolve múltiplos critérios de conformidade (existência do pedido, status, correspondência de CNPJ do fornecedor, presença dos materiais faturados, limite de saldo pendente e tolerância de preço unitário). Implementar isso de forma sequencial procedural em um único método de serviço geraria código acoplado, de difícil manutenção e propenso a efeitos colaterais.
 * **Diretriz do Desenvolvedor:**
   O desenvolvedor orientou a refatoração do motor de matching para o padrão comportamental **Chain of Responsibility**, acompanhado de uma exigência rigorosa de Developer Experience (DX): a API não deveria apenas aprovar ou reprovar, mas retornar **feedback cirúrgico e granular por item**.
 * **Estrutura Implementada:**
   - Interface atômica `ReconciliationRule` e orquestrador `ReconciliationRuleChain`;
   - Regras desacopladas e testadas isoladamente:
-    1. `OrderExistenceRule` (Pedido existente e acessível pelo tenant)
-    2. `VendorTaxIdMatchRule` (Conferência de CNPJ do fornecedor)
-    3. `ItemExistenceRule` (Conferência de código do material)
-    4. `UnitPriceToleranceRule` (Tolerância de preço unitário)
-    5. `CumulativeQuantityRule` (Saldo disponível considerando rateios cumulativos)
-  - Em caso de reprovação, a resposta devolve o objeto estruturado `ReconciliationDivergenceDto` com o número exato da linha da fatura (`lineNumber`), código do material (`materialCode`), valor esperado (`expectedValue`), valor faturado (`actualValue`) e a diferença matemática exata (`difference`).
+    1. `PurchaseOrderExistenceRule` (Pedido existente e acessível pelo tenant)
+    2. `OrderStatusRule` (Pedido aberto para faturamento)
+    3. `VendorMatchRule` (Conferência de CNPJ do fornecedor)
+    4. `ItemExistenceRule` (Conferência de código do material)
+    5. `ItemPendingBalanceRule` (Saldo disponível considerando rateios cumulativos)
+    6. `ItemPriceToleranceRule` (Tolerância de preço unitário)
+  - Em caso de reprovação, a resposta devolve o objeto estruturado `DivergenceResponse` com o número exato da linha da fatura (`lineNumber`), código do material (`materialCode`), valor esperado (`expectedValue`), valor faturado (`actualValue`) e a diferença matemática exata (`difference`).
 
 ---
 
 ### Decisão 4: Evolução do Schema com Preservação de Rastreabilidade Comercial (ADR-0003 & ADR-0004)
 * **Contexto e Deliberação:**
-  Ao introduzir o Cliente Gama (Parte 2), a empresa comprava em caixas (`CX`) com fator de conversão (ex: 10 caixas com fator 12 = 120 unidades). A proposta usual de IAs seria converter o valor em memória para `UN` e salvar apenas os dados normalizados.
+  Ao integrar o Cliente Gama, a empresa comprava em caixas (`CX`) com fator de conversão (ex: 10 caixas com fator 12 = 120 unidades). A proposta usual de IAs seria converter o valor em memória para `UN` e salvar apenas os dados normalizados.
 * **Diretriz do Desenvolvedor:**
   O desenvolvedor identificou que descartar a unidade comercial original destruiria o valor probatório e legal do pedido em caso de litígio comercial ou conferência física no armazém.
 * **Estrutura Implementada:**
@@ -114,17 +115,17 @@ A arquitetura e solidez do projeto derivam de intervenções arquiteturais diret
   Em arquiteturas convencionais que acoplam controllers e services diretamente ao Spring Data JPA (`JpaRepository`) ou anotações Hibernate, cria-se um aprisionamento tecnológico (*vendor lock-in*). Toda a camada de negócio fica amarrada a detalhes de infraestrutura SQL relacional. Mudar o banco de dados (de um relacional para um distribuído NoSQL, colunar de auditoria ou document-based) exigiria reescrever ou refatorar profundamente serviços, regras de negócio e suítes de teste.
 * **Diretriz do Desenvolvedor:**
   O desenvolvedor estabeleceu a aplicação estrita do **Princípio da Inversão de Dependência (DIP)** e do conceito de **Porta Hexagonal**:
-  1. O domínio define uma interface pura (`PurchaseOrderRepository` e `ReconciliationAuditRepository`) contendo exclusivamente contratos de negócio expressos em agregados e tipos canônicos (`PurchaseOrder`, `ReconciliationAudit`, `PurchaseOrderFilter`), sem anotações ou tipos do Spring Data;
+  1. O domínio define uma interface pura (`PurchaseOrderRepository` e `ReconciliationAuditRepository`) contendo exclusivamente contratos de negócio expressos em agregados e tipos canônicos (`PurchaseOrder`, `ReconciliationRecord`, `PurchaseOrderFilter`), sem anotações ou tipos do Spring Data;
   2. A persistência torna-se um **adaptador periférico descartável e substituível**: o núcleo da aplicação desconhece se os dados estão sendo salvos em PostgreSQL, H2, MongoDB, Cassandra, DynamoDB ou na memória RAM.
 * **Impacto Prático e Benefícios Comprovados no Projeto:**
   - **Migração Transparente da Matriz de Banco de Dados:**
     A migração da persistência inicial em H2 em arquivo para **PostgreSQL 16 conteinerizado** foi realizada de forma cirúrgica: nenhum serviço de ingestão (`AlfaIngestionService`, `BetaIngestionService`, `GamaIngestionService`), serviço de consulta (`PurchaseOrderQueryService`) ou motor de conciliação (`InvoiceReconciliationService`) precisou ser alterado. Bastou ajustar o adaptador JPA e as configurações do datasource;
   - **Pronto para Futuras Trocas de Matriz:**
-    Se no futuro a V360 optar por migrar os pedidos para um banco colunar ou distribuído em nuvem (ex: Google Cloud Spanner, CockroachDB, AWS Aurora), basta desenvolver um novo adaptador que implemente `PurchaseOrderRepository`, mantendo 100% das regras e integrações intactas;
+    Se no futuro a ProcureFlow optar por migrar os pedidos para um banco colunar ou distribuído em nuvem (ex: Google Cloud Spanner, CockroachDB, AWS Aurora), basta desenvolver um novo adaptador que implemente `PurchaseOrderRepository`, mantendo 100% das regras e integrações intactas;
   - **Dualidade Produção vs. Testes Ultrarrápidos:**
     Permitiu manter duas implementações ativas no projeto:
     - **`JpaPurchaseOrderRepositoryAdapter`:** Implementação oficial de produção para o **PostgreSQL 16**;
-    - **`InMemoryPurchaseOrderRepositoryAdapter`:** Implementação puramente em memória (`ConcurrentHashMap`), habilitada no perfil `@Profile("in-memory")`, permitindo rodar testes de integração e cenários de conciliação complexos em milissegundos, sem I/O de disco ou dependência de banco de dados ativo.
+    - **`InMemoryPurchaseOrderRepository`:** Implementação puramente em memória (`ConcurrentHashMap`), habilitada no perfil `@Profile("in-memory")`, permitindo rodar testes de integração e cenários de conciliação complexos em milissegundos, sem I/O de disco ou dependência de banco de dados ativo.
 
 ---
 
@@ -162,11 +163,11 @@ Os prompts que extraíram os melhores resultados da IA destacaram-se pelo rigor 
 
 ### Exemplo 1: Definição da Arquitetura de Segurança OAuth 2.0 M2M
 ```text
-Preciso estruturar a segurança da integração entre os ERPs clientes e o Gateway V360. 
+Preciso estruturar a segurança da integração entre os ERPs clientes e o Gateway ProcureFlow. 
 Não quero basic auth nem token estático. Vamos adotar o padrão de mercado para integrações M2M: 
 OAuth 2.0 Client Credentials Grant com JWT stateless. 
 Defina o endpoint POST /api/v1/auth/token gerando token assinado HMAC-SHA256 com claims 
-de tenantCode e roles segregadas (ROLE_PLATFORM para a V360 e ROLE_CLIENT para clientes Alfa, Beta, Gama). 
+de tenantCode e roles segregadas (ROLE_PLATFORM para a ProcureFlow e ROLE_CLIENT para clientes Alfa, Beta, Gama). 
 Configure o filtro de segurança Spring Security garantindo que um cliente comum não consiga 
 consultar nem reconciliar pedidos de outros tenants (isolamento multi-tenant estrito).
 ```
@@ -231,5 +232,5 @@ O resultado final atesta o domínio completo sobre cada linha de código entregu
 2. **Conformidade Contínua com Code Reviews Automatizados:**
    - Todas as entregas passaram por ciclos de `/code-review` com subagentes especializados, saneando code smells, corrigindo potenciais vulnerabilidades de concorrência e mantendo fidelidade estrita às especificações.
 
-3. **Pronto para Produção e Avaliação com 1 Comando:**
-   - Entrega conteinerizada com `docker compose up --build`, orquestrando **PostgreSQL 16** e a aplicação Spring Boot com *healthchecks* encadeados, suite de testes em `requests.http` e documentação visual interativa no Swagger UI.
+3. **Pronto para Produção e Execução com 1 Comando:**
+   - Entrega conteinerizada com `docker compose up --build`, orquestrando **PostgreSQL 16** e a aplicação Spring Boot com *healthchecks* encadeados, suíte de testes em `requests.http` e documentação visual interativa no Swagger UI.

@@ -7,10 +7,10 @@ spring:
   application:
     name: purchase-order-gateway
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:v360_db}}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:procureflow_db}}
     driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
-    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:v360_user}}
-    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:v360_pass}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:procureflow_user}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:procureflow_pass}}
   h2:
     console:
       enabled: ${H2_CONSOLE_ENABLED:false}
@@ -34,10 +34,10 @@ springdoc:
 
 security:
   jwt:
-    secret: "v360-super-secure-jwt-signing-secret-key-for-hmac-sha256-production-ready"
+    secret: "procureflow-super-secure-jwt-signing-secret-key-for-hmac-sha256-production-ready"
     expiration-seconds: 86400
   clients:
-    - client-id: "v360-platform"
+    - client-id: "procureflow-platform"
       client-secret: "platform-secret-123"
       tenant-code: "PLATFORM"
       roles:

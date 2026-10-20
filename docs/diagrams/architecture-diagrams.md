@@ -1,6 +1,6 @@
-# Diagramas de Arquitetura e Fluxo - V360 Gateway
+# Diagramas de Arquitetura e Fluxo - ProcureFlow Gateway
 
-Este documento centraliza os diagramas visuais do **V360 Conector de Pedidos de Compra**, documentando a estrutura de componentes da aplicação e o caminho percorrido pelas requisições.
+Este documento centraliza os diagramas visuais do **ProcureFlow Conector de Pedidos de Compra**, documentando a estrutura de componentes da aplicação e o caminho percorrido pelas requisições.
 
 ---
 

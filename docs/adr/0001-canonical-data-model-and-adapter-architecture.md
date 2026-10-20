@@ -4,7 +4,7 @@ Date: 2026-09-04
 
 ## Context
 
-The V360 platform needs to query purchase orders and reconcile supplier invoices against diverse client ERP systems (e.g. Alfa Energia exporting nested JSON, Beta Alimentos exporting split semicolon-delimited CSVs, and Gama Logística exporting flat JSON with conversion factors). Allowing client-specific schemas to penetrate the core matching logic would create tight coupling, where any client change or new client onboarding would break the core platform.
+The ProcureFlow platform needs to query purchase orders and reconcile supplier invoices against diverse client ERP systems (e.g. Alfa Energia exporting nested JSON, Beta Alimentos exporting split semicolon-delimited CSVs, and Gama Logística exporting flat JSON with conversion factors). Allowing client-specific schemas to penetrate the core matching logic would create tight coupling, where any client change or new client onboarding would break the core platform.
 
 ## Decision
 

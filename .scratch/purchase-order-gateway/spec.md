@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-A plataforma central V360 precisa automatizar a conferência (three-way matching) de notas fiscais de fornecedores contra pedidos de compra corporativos para evitar conferências manuais lentas, caras e propensas a erros no contas a pagar. No entanto, cada cliente corporativo da V360 possui um ERP distinto (como SAP, Totvs ou sistemas legados) que exporta dados de compras em formatos heterogêneos e conflitantes (JSON aninhado, múltiplos CSVs com formatação brasileira ou JSON achatado com unidades de embalagem comercial como caixas). Se a plataforma V360 tentasse suportar cada formato diretamente, haveria alto acoplamento e qualquer alteração de formato em um cliente quebraria a plataforma para todos os outros.
+A plataforma central ProcureFlow precisa automatizar a conferência (three-way matching) de notas fiscais de fornecedores contra pedidos de compra corporativos para evitar conferências manuais lentas, caras e propensas a erros no contas a pagar. No entanto, cada cliente corporativo da ProcureFlow possui um ERP distinto (como SAP, Totvs ou sistemas legados) que exporta dados de compras em formatos heterogêneos e conflitantes (JSON aninhado, múltiplos CSVs com formatação brasileira ou JSON achatado com unidades de embalagem comercial como caixas). Se a plataforma ProcureFlow tentasse suportar cada formato diretamente, haveria alto acoplamento e qualquer alteração de formato em um cliente quebraria a plataforma para todos os outros.
 
 ## Solution
 
@@ -10,19 +10,19 @@ Construção de uma camada intermediária de integração em Java 21 e Spring Bo
 
 ## User Stories
 
-1. As a V360 Platform Operator, I want to authenticate via OAuth 2.0 Client Credentials, so that I receive a secure JWT token to access platform endpoints.
+1. As a ProcureFlow Platform Operator, I want to authenticate via OAuth 2.0 Client Credentials, so that I receive a secure JWT token to access platform endpoints.
 2. As a Client System, I want to authenticate via OAuth 2.0 Client Credentials with tenant-scoped permissions, so that I can securely transmit purchasing data without exposing other clients.
 3. As a Client Alfa Integration, I want to send nested JSON purchase orders, so that my orders are ingested and normalized into canonical purchase orders.
 4. As a Client Beta Integration, I want to upload Brazilian-formatted CSV files (header and items), so that comma-decimal numbers, Brazilian dates, and masked CNPJs are correctly parsed into canonical purchase orders.
 5. As a Client Gama Integration, I want to transmit flat JSON items containing packaging units and conversion factors, so that quantities and unit prices are normalized to base units while preserving commercial packaging metadata.
 6. As a Procurement Operator, I want to resubmit a modified purchase order, so that the gateway updates existing records idempotently without creating duplicates.
-7. As a V360 Operator, I want to query purchase orders filtering by client identifier, so that I can inspect orders from a specific customer.
-8. As a V360 Operator, I want to query purchase orders filtering by vendor CNPJ (with or without mask), so that I can inspect orders associated with a particular supplier.
-9. As a V360 Operator, I want to query purchase orders filtering by canonical order status (OPEN, CLOSED, BLOCKED), so that I can isolate actionable orders.
-10. As a V360 Operator, I want to query only purchase orders that still have a pending balance, so that I can focus on deliveries that are still outstanding.
-11. As a V360 Operator, I want paginated query results with total counts, so that high volumes of purchase orders can be navigated efficiently.
-12. As a V360 Operator, I want to retrieve full details of a specific purchase order, so that I can see the exact ordered, received, and calculated pending balance for every item.
-13. As a V360 Platform, I want to submit an incoming supplier invoice for reconciliation against a purchase order, so that I can determine if payment can be approved.
+7. As a ProcureFlow Operator, I want to query purchase orders filtering by client identifier, so that I can inspect orders from a specific customer.
+8. As a ProcureFlow Operator, I want to query purchase orders filtering by vendor CNPJ (with or without mask), so that I can inspect orders associated with a particular supplier.
+9. As a ProcureFlow Operator, I want to query purchase orders filtering by canonical order status (OPEN, CLOSED, BLOCKED), so that I can isolate actionable orders.
+10. As a ProcureFlow Operator, I want to query only purchase orders that still have a pending balance, so that I can focus on deliveries that are still outstanding.
+11. As a ProcureFlow Operator, I want paginated query results with total counts, so that high volumes of purchase orders can be navigated efficiently.
+12. As a ProcureFlow Operator, I want to retrieve full details of a specific purchase order, so that I can see the exact ordered, received, and calculated pending balance for every item.
+13. As a ProcureFlow Platform, I want to submit an incoming supplier invoice for reconciliation against a purchase order, so that I can determine if payment can be approved.
 14. As a Accounts Payable Auditor, I want reconciliation to verify if the invoice vendor matches the purchase order vendor, so that payments are not routed to fraudulent or incorrect entities.
 15. As a Accounts Payable Auditor, I want reconciliation to verify if the purchase order is in OPEN status, so that invoices against BLOCKED or CLOSED orders are rejected.
 16. As a Accounts Payable Auditor, I want reconciliation to verify if invoiced materials exist in the purchase order, so that unauthorized materials are rejected.

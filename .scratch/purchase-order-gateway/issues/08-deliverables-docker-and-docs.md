@@ -7,7 +7,7 @@
 **Status:** done
 
 - [x] Arquivo `requests.http` com fluxo completo autenticado (obtenção de token, consultas, filtros, conferências que aprovam e reprovam, e relatório)
-- [x] Arquivo de coleção Postman correspondente (`v360-collection.json`)
+- [x] Arquivo de coleção Postman correspondente (`procureflow-collection.json`)
 - [x] `Dockerfile` multi-stage com build e runtime otimizados para Java 21
 - [x] `docker-compose.yml` para execução rápida com 1 comando
 - [x] `README.md` abrangente:
